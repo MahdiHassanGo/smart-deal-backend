@@ -31,7 +31,25 @@ async function run() {
     const db = client.db("smart_db");
     const productsCollection = db.collection("products");
     const bidsCollection = db.collection("bids");
+    const usersCollection = db.collection("users");
+    
 
+    app.post("/users",async(req,res)=>{
+      const user=req.body;
+      const email=req.body.email;
+      const query = {email:email}
+      const existingUser = await usersCollection.findOne(query);
+      if(existingUser){
+        res.send('user already exists')
+      }
+      else{
+ const result=await usersCollection.insertOne(user);
+      res.send(result);
+      }
+     
+    })
+
+  
     app.post("/products", async (req, res) => {
       const result = await productsCollection.insertOne(req.body);
       res.send(result);
